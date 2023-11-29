@@ -1,0 +1,7 @@
+#declared function
+
+main.c:
+main
+
+is_alphabet.c:
+is_alphabet
