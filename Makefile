@@ -21,12 +21,18 @@ DCFLAGS_VAL = $(CFLAGS) -g
 DCFLAGS_FSA = $(CFLAGS) -g3 -fsanitize=address
 
 # FOLDER & FILES
+
+SRCS_FILES = 	utils.c \
+				init.c \
+				parsing.c\
+				routine.c \
+
 # PATH_DEV = $(addprefix $(DIR_X), $(SRCS_Y))
 # DIR_DEV = FOLDER/
-# SRCS_DEV = FILE.c \
+# SRCS_DEV = FILE.c
 
 # FILES = $(PATH_X)
-FILES = $(ORIGIN)
+FILES =  $(PATH_UTILS) $(SRCS_FILES) $(ORIGIN)
 
 SRCS := $(addprefix $(SRC_PATH), $(FILES))
 OBJS := $(subst $(SRC_PATH), $(OBJ_PATH), $(SRCS:.c=.o))
@@ -49,11 +55,11 @@ run:
 # Debug
 debugv : $(OBJS)
 	@$(CC) $(CFLAGS) $(OBJS) -o $(NAME)
-	valgrind --leak-check=full ./minishell
+	valgrind --leak-check=full ./philo 5 800 200 200 7
 
 debugfa: run
 	@$(CC) $(DCFLAGS_FSA) -g3 -fsanitize=address $(SRCS) -o $(NAME)
-	./$(NAME)
+	./$(NAME) 5 800 200 200 7
 
 the_end :
 	rm -rf $(OBJS)
