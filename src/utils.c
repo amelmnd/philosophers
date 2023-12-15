@@ -6,7 +6,7 @@
 /*   By: amennad <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/14 15:39:12 by amennad           #+#    #+#             */
-/*   Updated: 2023/12/15 11:37:58 by amennad          ###   ########.fr       */
+/*   Updated: 2023/12/15 18:34:08 by amennad          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,10 +14,12 @@
 
 time_t	ft_get_time(void)
 {
-	struct timeval	tmp;
+	struct timeval	now;
+	time_t			timestamp;
 
-	gettimeofday(&tmp, NULL);
-	return ((tmp.tv_sec * 1000) + (tmp.tv_usec / 1000));
+	gettimeofday(&now, NULL);
+	timestamp = ((now.tv_sec * 1000) + (now.tv_usec / 1000));
+	return (timestamp);
 }
 
 void	ft_try_lock(pthread_mutex_t *mutex)
@@ -45,6 +47,7 @@ int	print_status(t_data *data, int id, char *str, char *color)
 	ft_try_lock(&(data->mutex_message));
 	if (data->philo_dead == TRUE)
 	{
+		//si il est mort il faut lacher la fourchette
 		aff_time = ft_get_time() - data->start_meal + data->time_to_die;
 		printf("%s %d %d %s %s\n", C_DEAD, aff_time, id, str, C_RESET);
 		ft_try_unlock(&(data->mutex_message));

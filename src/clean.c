@@ -6,7 +6,7 @@
 /*   By: amennad <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/12 15:56:17 by amennad           #+#    #+#             */
-/*   Updated: 2023/12/14 17:03:57 by amennad          ###   ########.fr       */
+/*   Updated: 2023/12/15 16:28:50 by amennad          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,7 +32,7 @@ int	free_destroy(t_data *data, t_bool error)
 		pthread_mutex_destroy(data->philo[i]->mutex_l_fork);
 		pthread_mutex_destroy(data->philo[i]->mutex_r_fork);
 		pthread_mutex_destroy(&data->mutex_forks[i]);
-		// destroy_threads(data->philo[i]);
+		pthread_detach(data->philo[i]->thread_philo);
 		free(data->philo[i]);
 		i++;
 	}

@@ -6,7 +6,7 @@
 /*   By: amennad <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/14 14:58:02 by amennad           #+#    #+#             */
-/*   Updated: 2023/12/15 10:43:45 by amennad          ###   ########.fr       */
+/*   Updated: 2023/12/15 18:18:44 by amennad          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,6 +16,7 @@ int	init_data(t_data *data, char *argv[])
 {
 	int	i;
 
+	i = 0;
 	data->nb_philo = philo_atoi(argv[1]);
 	data->time_to_die = philo_atoi(argv[2]);
 	data->time_to_eat = philo_atoi(argv[3]);
@@ -42,9 +43,14 @@ int	init_data(t_data *data, char *argv[])
 
 void	manage_philo_fork(t_data *data, int i)
 {
-	data->philo[i]->mutex_l_fork = &data->mutex_forks[i];
-	data->philo[i]->mutex_r_fork = &data->mutex_forks[(i + 1) % data->nb_philo];
-	if (i % 2)
+	printf("(i + 1)  data->nb_philo = %d\n ", (i + 1) % data->nb_philo);
+	if (i % 2 == 0)
+	{
+		data->philo[i]->mutex_l_fork = &data->mutex_forks[i];
+		data->philo[i]->mutex_r_fork = &data->mutex_forks[(i + 1)
+			% data->nb_philo];
+	}
+	else if (i % 2)
 	{
 		data->philo[i]->mutex_l_fork = &data->mutex_forks[(i + 1)
 			% data->nb_philo];
@@ -73,8 +79,9 @@ void	init_philo(t_data *data)
 		// if (data->philo[i]->id_philo % 2)
 		// 	data->philo[i]->philo_status = THINKING;
 		manage_philo_fork(data, i);
-		pthread_mutex_init(data->philo[i]->mutex_l_fork, NULL);
-		pthread_mutex_init(data->philo[i]->mutex_r_fork, NULL);
+		// ne sert a rien
+		// pthread_mutex_init(data->philo[i]->mutex_l_fork, NULL);
+		// pthread_mutex_init(data->philo[i]->mutex_r_fork, NULL);
 		data->philo[i]->lock_l_fork = FALSE;
 		data->philo[i]->lock_r_fork = FALSE;
 		i++;
