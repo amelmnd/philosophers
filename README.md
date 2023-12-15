@@ -1,1 +1,1 @@
-Philosopher
+PROJECT_NAME

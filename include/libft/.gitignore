@@ -53,10 +53,8 @@ dkms.conf
 
 # Other files
 *.DS_Store
-*.dSYM
-*.DS_Store
 .history
-exec
-a.out
-.vscode
-philo
+prog
+
+#Only this project
+libftTester
