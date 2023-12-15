@@ -1,29 +1,32 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   main.c                                             :+:      :+:    :+:   */
+/*   fn_libft.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: amennad <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/12/04 10:15:56 by amennad           #+#    #+#             */
-/*   Updated: 2023/12/14 16:35:55 by amennad          ###   ########.fr       */
+/*   Created: 2023/12/14 11:27:12 by amennad           #+#    #+#             */
+/*   Updated: 2023/12/14 11:27:16 by amennad          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "philo.h"
-
-int	main(int argc, char *argv[])
+int	philo_atoi(char *str)
 {
-	t_data	*data;
+	int i;
+	int result;
 
-	if (argc_is_valid(argc) == FALSE)
-		return (1);
-	if (argv_is_valid(argv) == FALSE)
-		return (1);
-	data = (t_data *)malloc(sizeof(t_data));
-	if (initialize(argv, data) == 1)
-		return (free_destroy(data, TRUE));
-	if (the_meal(data) == 1)
-		return (free_destroy(data, TRUE));
-	return (0);
+	i = 0;
+	result = 0;
+	while (str[i])
+	{
+		if (str[i] < '0' || str[i] > '9')
+			return (-1);
+		result = result + (str[i] - 48);
+		i++;
+		if (str[i] != '\0' && (str[i] >= '0' && str[i] <= '9'))
+			result = result * 10;
+		if (result > 2147483647)
+			return (-1);
+	}
+	return (result);
 }

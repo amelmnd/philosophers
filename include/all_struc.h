@@ -6,7 +6,7 @@
 /*   By: amennad <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/21 17:45:35 by amennad           #+#    #+#             */
-/*   Updated: 2023/12/13 16:08:34 by amennad          ###   ########.fr       */
+/*   Updated: 2023/12/14 17:40:21 by amennad          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,41 +34,46 @@ enum						e_philo_status
 	DEAD
 };
 
+struct						s_data
+{
+	int						nb_philo;
+	int						time_to_die;
+	int						time_to_eat;
+	int						time_to_sleep;
+	int						nb_meals;
+	int						start_meal;
+	int						nb_philo_ready;
+	pthread_mutex_t			mutex_philo_ready;
+	int						nb_philo_finished;
+	pthread_mutex_t			mutex_philo_finished;
+	pthread_mutex_t			mutex_message;
+	pthread_t				thread_monitoring;
+	t_bool					philo_dead;
+	pthread_mutex_t			mutex_is_dead;
+	pthread_mutex_t			*mutex_forks;
+	t_philo					**philo;
+	int						n_philo;
+	pthread_mutex_t			mutex_n_philo;
+};
+
 struct						s_philo
 {
 	t_data					*data;
-	pthread_t				thread;
-	t_bool					eating;
-	size_t					start_time;
-	size_t					last_meal;
-	size_t					is_time_to_eat;
+	int						nb_philo;
+	int						time_to_die;
+	int						time_to_eat;
+	int						time_to_sleep;
+	int						nb_meals;
+	int						start_meal;
+	pthread_t				thread_philo;
 	int						id_philo;
-	int						id_fork;
-	int						start_eat;
+	size_t					last_meal;
 	size_t					nb_eats;
 	t_philo_status			philo_status;
-	pthread_mutex_t			*l_fork;
-	pthread_mutex_t			*r_fork;
-	int						nb_forks;
-};
-
-struct						s_data
-{
-	size_t					time_to_die;
-	size_t					time_to_eat;
-	size_t					time_to_sleep;
-	size_t					nb_philo;
-	size_t					nb_meals;
-	time_t					start_meat;
-	t_bool					philo_dead;
-	t_philo					*philo;
-	pthread_mutex_t			*is_dead;
-	pthread_mutex_t			str_message;
-	pthread_mutex_t			*forks;
-	pthread_t				*philos_thread;
-	pthread_t				check_is_dead;
-	pthread_mutex_t			mutex_n_thread;
-	int						n_thread;
+	pthread_mutex_t			*mutex_l_fork;
+	t_bool					lock_l_fork;
+	pthread_mutex_t			*mutex_r_fork;
+	t_bool					lock_r_fork;
 };
 
 #endif

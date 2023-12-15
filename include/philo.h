@@ -1,9 +1,19 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   philo.h                                            :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: amennad <marvin@42.fr>                     +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2023/12/14 10:15:02 by amennad           #+#    #+#             */
+/*   Updated: 2023/12/15 10:24:46 by amennad          ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
 
 #ifndef PHILO_H
 # define PHILO_H
 
 # include "all_struc.h"
-# include "for_dev.h"
 // selon les besoins du projet, ajouter les includes nécessaires
 # include <errno.h>
 # include <pthread.h>  //for threads
@@ -24,19 +34,26 @@
 // UTILS
 int		philo_atoi(char *str);
 time_t	ft_get_time(void);
-void	try_unlock(pthread_mutex_t *mutex);
-void	try_lock(pthread_mutex_t *mutex);
-int		destroy_threads(t_data *data);
-int		philo_free(t_data *data, int ret);
+void	ft_try_unlock(pthread_mutex_t *mutex);
+void	ft_try_lock(pthread_mutex_t *mutex);
 int		print_status(t_data *data, int id, char *str, char *color);
+int		free_destroy(t_data *data, t_bool error);
+
+// PARSING
+t_bool	argc_is_valid(int argc);
+t_bool	argv_is_valid(char *argv[]);
+t_bool	arg_is_valid(char *str, char *message);
+
+// INIT
+int		initialize(char *argv[], t_data *data);
+int		init_data(t_data *data, char *argv[]);
+int		the_meal(t_data *data);
 
 // ALGO
-t_bool	check_args(char *str, size_t *data_item, char *message);
-t_bool	check_valid_args(char *argv[], t_data *data);
-int		initialize(t_data *data);
-int		philo_alone(t_data *data);
-int		the_meal(t_data *data);
-void	*routine(void *arg);
-void	*is_dead(void *arg);
+int		drop_fork(t_data *data, int i);
+int		take_fork(t_data *data, int i);
+t_bool	check_dead(t_philo *philo);
+void	*philo_routine(void *arg);
+int		philo_life(t_data *data, size_t i);
 
 #endif
