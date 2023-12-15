@@ -23,7 +23,8 @@ DCFLAGS_FST = $(CFLAGS) -g3 -fsanitize=thread
 
 # FOLDER & FILES
 
-SRCS_FILES = parsing.c utils.c init_struc.c  generate_philo.c routine.c check_dead_alive.c clean.c\
+SRCS_FILES = parsing.c fn_libft.c utils.c init.c the_meal.c philo_routine.c philo_life.c clean.c\
+#generate_philo.c routine.c check_dead_alive.c \
 
 # PATH_DEV = $(addprefix $(DIR_X), $(SRCS_Y))
 # DIR_DEV = FOLDER/
@@ -47,9 +48,6 @@ $(NAME): $(OBJS)
 	@$(CC) $(CFLAGS) $(OBJS) -o $(NAME)
 	@echo "$(COLOR_MAGENTA)objs & $(NAME) generate 🌸$(END_COLOR)"
 
-run:
-	@echo "$(COLOR_GREEN)$(NAME) generate 🍀$(END_COLOR)"
-
 # Debug
 debugv : $(OBJS)
 	@$(CC) $(CFLAGS) $(OBJS) -o $(NAME)
@@ -57,18 +55,9 @@ debugv : $(OBJS)
 
 debugfa: run
 	@$(CC) $(DCFLAGS_FSA) -g3 -fsanitize=address $(SRCS) -o $(NAME)
-	./$(NAME) 5 800 200 200 7
 
 debugft: run
 	@$(CC) $(DCFLAGS_FST) $(SRCS) -o $(NAME)
-	./$(NAME) 5 800 200 200 7
-
-the_end :
-	rm -rf $(OBJS)
-	rm -rf $(NAME)
-	rm -rf boite_a_outils
-	rm -rf a.out
-	rm -rf for_dev
 
 # Clean
 clean:
