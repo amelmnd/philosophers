@@ -9,75 +9,41 @@ END_COLOR=\033[0m
 # VAR
 NAME = philo
 ORIGIN = main.c
-CC = cc
-SRC_PATH	:= src/
-OBJ_PATH 	:= .obj/
-
-CFLAGS = -Wall -Wextra -Werror -I ./include
+CC = gcc
 CFLAGS = -Wall -Wextra -Werror -I./include/
 
-# DEBUG
-DCFLAGS_VAL = $(CFLAGS) -g
-DCFLAGS_FSA = $(CFLAGS) -g3 -fsanitize=address
+PATH_UTILS = $(addprefix $(DIR_UTILS), $(SRCS_UTILS))
+DIR_UTILS = utils/
+SRCS_UTILS = utils.c\
 
-# FOLDER & FILES
-
-SRCS_FILES = 	utils.c \
-				init.c \
-				parsing.c\
-				routine.c \
-
-# PATH_DEV = $(addprefix $(DIR_X), $(SRCS_Y))
-# DIR_DEV = FOLDER/
-# SRCS_DEV = FILE.c
-
-# FILES = $(PATH_X)
-FILES =  $(PATH_UTILS) $(SRCS_FILES) $(ORIGIN)
-
-SRCS := $(addprefix $(SRC_PATH), $(FILES))
-OBJS := $(subst $(SRC_PATH), $(OBJ_PATH), $(SRCS:.c=.o))
+SRCS = $(PATH_UTILS) $(ORIGIN)
+OBJS = $(SRCS:.c=.o)
 
 # RULES
 all: $(NAME)
 
-$(OBJ_PATH)%.o:	$(SRC_PATH)%.c
-				@mkdir -p $(@D)
-				@$(CC) $(CFLAGS) -c $< -o $@
-				@echo "compiling : $<                                      \r"
+libft:
+	@make -C ./include/libft
 
-$(NAME): $(OBJS)
-	@$(CC) $(CFLAGS) $(OBJS) -o $(NAME)
-	@echo "$(COLOR_MAGENTA)objs & $(NAME) generate 🌸$(END_COLOR)"
+$(NAME): $(OBJS) libft
+	@$(CC) -I ./include $(OBJS) ./include/libft/libft.a $(CFLAGS) -o $(NAME)
+	@echo "$(COLOUR_MAGENTA)objs & $(NAME) generate 🌸$(END_COLOR)"
 
-run:
-	@echo "$(COLOR_GREEN)$(NAME) generate 🍀$(END_COLOR)"
+run: libft
+	@$(CC) -I ./include $(SRCS) ./include/libft/libft.a $(CFLAGS) -o $(NAME)
+	@echo "$(COLOUR_GREEN)$(NAME) generate 🍀$(END_COLOR)"
 
-# Debug
-debugv : $(OBJS)
-	@$(CC) $(CFLAGS) $(OBJS) -o $(NAME)
-	valgrind --leak-check=full ./philo 5 800 200 200 7
-
-debugfa: run
-	@$(CC) $(DCFLAGS_FSA) -g3 -fsanitize=address $(SRCS) -o $(NAME)
-	./$(NAME) 5 800 200 200 7
-
-the_end :
-	rm -rf $(OBJS)
-	rm -rf $(NAME)
-	rm -rf boite_a_outils
-	rm -rf a.out
-	rm -rf for_dev
-
-# Clean
 clean:
+	@cd ./include/libft; make clean
 	@rm -rf $(OBJS)
 	@echo "$(COLOUR_BLUE) clean 🐟$(END_COLOR)"
 
 fclean : clean
+	@cd ./include/libft && make fclean
 	@rm -rf $(NAME)
 	@echo "$(COLOUR_BLUE) fclean 🐳$(END_COLOR)"
 
 re:fclean all
 	@echo "$(COLOUR_MAGENTA)make re OK 🌸$(END_COLOR)"
 
-.PHONY: all clean fclean re run debugv debugfa the_end
+.PHONY: all clean fclean re run libft
