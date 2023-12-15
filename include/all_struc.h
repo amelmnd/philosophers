@@ -6,7 +6,7 @@
 /*   By: amennad <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/21 17:45:35 by amennad           #+#    #+#             */
-/*   Updated: 2023/12/14 17:40:21 by amennad          ###   ########.fr       */
+/*   Updated: 2023/12/15 16:21:56 by amennad          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,7 +41,7 @@ struct						s_data
 	int						time_to_eat;
 	int						time_to_sleep;
 	int						nb_meals;
-	int						start_meal;
+	time_t						start_meal;
 	int						nb_philo_ready;
 	pthread_mutex_t			mutex_philo_ready;
 	int						nb_philo_finished;
@@ -64,11 +64,11 @@ struct						s_philo
 	int						time_to_eat;
 	int						time_to_sleep;
 	int						nb_meals;
-	int						start_meal;
+	time_t						start_meal;
 	pthread_t				thread_philo;
 	int						id_philo;
-	size_t					last_meal;
-	size_t					nb_eats;
+	time_t					last_meal;
+	int					nb_eats;
 	t_philo_status			philo_status;
 	pthread_mutex_t			*mutex_l_fork;
 	t_bool					lock_l_fork;

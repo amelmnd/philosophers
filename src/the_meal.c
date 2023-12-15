@@ -6,7 +6,7 @@
 /*   By: amennad <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/14 15:34:08 by amennad           #+#    #+#             */
-/*   Updated: 2023/12/15 11:12:22 by amennad          ###   ########.fr       */
+/*   Updated: 2023/12/15 17:09:23 by amennad          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,6 +21,7 @@ int	init_threads(t_data *data)
 	data->start_meal = ft_get_time();
 	while (i < data->nb_philo)
 	{
+		data->philo[i]->last_meal = ft_get_time();
 		ft_try_lock(&data->mutex_n_philo);
 		data->n_philo = i;
 		ft_try_unlock(&data->mutex_n_philo);

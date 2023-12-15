@@ -6,7 +6,7 @@
 /*   By: amennad <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/14 10:15:02 by amennad           #+#    #+#             */
-/*   Updated: 2023/12/15 10:24:46 by amennad          ###   ########.fr       */
+/*   Updated: 2023/12/15 17:11:45 by amennad          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,5 +55,6 @@ int		take_fork(t_data *data, int i);
 t_bool	check_dead(t_philo *philo);
 void	*philo_routine(void *arg);
 int		philo_life(t_data *data, size_t i);
+t_bool	philo_is_dead(t_philo *philo);
 
 #endif
