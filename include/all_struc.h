@@ -6,80 +6,69 @@
 /*   By: amennad <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/21 17:45:35 by amennad           #+#    #+#             */
-/*   Updated: 2023/12/11 16:51:51 by amennad          ###   ########.fr       */
+/*   Updated: 2023/12/13 16:08:34 by amennad          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef ALL_STRUCT_H
 # define ALL_STRUCT_H
 
-
+# include "philo.h"
+# include <pthread.h>
 typedef enum e_bool			t_bool;
-// typedef enum e_philo_status	t_philo_status;
+typedef enum e_philo_status	t_philo_status;
 typedef struct s_data		t_data;
-// typedef struct s_philo		t_philo;
+typedef struct s_philo		t_philo;
 
-enum e_bool
+enum						e_bool
 {
 	FALSE,
 	TRUE
 };
 
-// enum e_philo_status
-// {
-// 	THINKING,
-// 	EATING,
-// 	SLEEPING,
-// };
-
-// struct s_philo
-// {
-// 	int				id_philo;
-// 	int				id_forg;
-// 	int				start_eat;
-// 	int				forg_left;
-// 	int				forg_rigth;
-// 	// enum	e_status_forg;
-// 	t_philo_status	philo_status;
-// };
-
-struct s_data
+enum						e_philo_status
 {
-
+	THINKING,
+	EATING,
+	SLEEPING,
+	DEAD
 };
 
-typedef struct s_philo
+struct						s_philo
 {
-	struct s_data	*data;
-	pthread_t       t1;
-	int             id;
-	int             eat_cont;
-	int             status;
-	int             eating;
-	uint64_t        time_to_die;
-	pthread_mutex_t	lock;
-	pthread_mutex_t	*r_fork;
-	pthread_mutex_t	*l_fork;
-} t_philo;
+	t_data					*data;
+	pthread_t				thread;
+	t_bool					eating;
+	size_t					start_time;
+	size_t					last_meal;
+	size_t					is_time_to_eat;
+	int						id_philo;
+	int						id_fork;
+	int						start_eat;
+	size_t					nb_eats;
+	t_philo_status			philo_status;
+	pthread_mutex_t			*l_fork;
+	pthread_mutex_t			*r_fork;
+	int						nb_forks;
+};
 
-typedef struct s_data
+struct						s_data
 {
-	pthread_t       *tid;
-	int				nb_philo;
-	int             philo_num;
-	int             meals_nb;
-	int		nb_eat;
-	int             dead;
-	int             finished;
-	t_philo         *philos;
-	int		time_to_die;
-	int		time_to_eat;
-	int		time_to_sleep;
-	u_int64_t       start_time;
-	pthread_mutex_t *forks;
-	pthread_mutex_t lock;
-	pthread_mutex_t write;
-} t_data;
-
+	size_t					time_to_die;
+	size_t					time_to_eat;
+	size_t					time_to_sleep;
+	size_t					nb_philo;
+	size_t					nb_meals;
+	time_t					start_meat;
+	t_bool					philo_dead;
+	t_philo					*philo;
+	pthread_mutex_t			*is_dead;
+	pthread_mutex_t			str_message;
+	pthread_mutex_t			*forks;
+	pthread_t				*philos_thread;
+	pthread_t				check_is_dead;
+	pthread_mutex_t			mutex_n_thread;
+	int						n_thread;
+};
 
 #endif

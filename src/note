@@ -72,7 +72,7 @@ V1
 		try_unlock(philo->l_fork);
 		if (philo->nb_forks > 1)
 			try_unlock(philo->r_fork);
-		printf("%s %ld %d died\n", C_DEAD, ft_time() - philo->data->start_meat,
+		printf("%s %ld %d died\n", C_DEAD, ft_time() - philo->data->start_meal,
 				philo->id_philo);
 	}
 	return (TRUE);
@@ -83,7 +83,7 @@ void	philo_alone(t_data *data, t_philo *philo)
 	philo->data->dead = TRUE;
 	try_lock(philo->l_fork);
 	// try_lock(data->str_message); // TODO PB SEGFAULT SI ACTIVÉ
-	printf("%s %ld %d has taken a fork\n", C_EAT, ft_time() - data->start_meat,
+	printf("%s %ld %d has taken a fork\n", C_EAT, ft_time() - data->start_meal,
 			philo->id_philo);
 	printf("%s %ld %d died\n", C_DEAD, data->time_to_die, philo->id_philo);
 	try_unlock(philo->l_fork);
@@ -103,34 +103,34 @@ t_bool	fn_eating(t_philo *philo, t_data *data)
 			if (data->dead)
 				return (philo_dead(philo));
 			printf("%s %ld %d has taken a fork\n", C_EAT, ft_time()
-					- data->start_meat, philo->id_philo);
+					- data->start_meal, philo->id_philo);
 			try_lock(philo->r_fork);
 			philo->nb_forks++;
 			if (data->dead)
 				return (philo_dead(philo));
 			printf("%s %ld %d has taken a fork\n", C_EAT, ft_time()
-					- data->start_meat, philo->id_philo);
+					- data->start_meal, philo->id_philo);
 			if (ft_time() - philo->last_meal >= data->time_to_die)
 				return (philo_dead(philo));
-			printf("%s %ld %d is eating\n", C_EAT, ft_time() - data->start_meat,
+			printf("%s %ld %d is eating\n", C_EAT, ft_time() - data->start_meal,
 					philo->id_philo);
 		}
 	}
-	printf("%ld %d is fn_eating\n", ft_time() - data->start_meat,
+	printf("%ld %d is fn_eating\n", ft_time() - data->start_meal,
 			philo->id_philo);
 	return (FALSE);
 }
 
 t_bool	fn_sleeping(t_philo *philo, t_data *data)
 {
-	printf("%ld %d is sleeping\n", ft_time() - data->start_meat,
+	printf("%ld %d is sleeping\n", ft_time() - data->start_meal,
 			philo->id_philo);
 	return (FALSE);
 }
 
 t_bool	fn_thinking(t_philo *philo, t_data *data)
 {
-	printf("%ld %d is thinking\n", ft_time() - data->start_meat,
+	printf("%ld %d is thinking\n", ft_time() - data->start_meal,
 			philo->id_philo);
 	return (FALSE);
 }
@@ -141,7 +141,7 @@ void	*routine(void *arg)
 
 	philo = (t_philo *)arg;
 	data = philo->data;
-	while (ft_time() < data->start_meat)
+	while (ft_time() < data->start_meal)
 		continue ;
 	if (data->nb_philo == 1)
 	{

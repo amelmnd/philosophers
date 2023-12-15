@@ -1,3 +1,4 @@
 A adapter et incure dans chaque fichier
 
-#include "philo.h"
+#include "../include/libft/libft.h"
+#include "project.h"

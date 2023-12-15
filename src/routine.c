@@ -5,96 +5,101 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: amennad <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/12/04 16:51:10 by amennad           #+#    #+#             */
-/*   Updated: 2023/12/11 18:52:21 by amennad          ###   ########.fr       */
+/*   Created: 2023/12/12 15:06:12 by amennad           #+#    #+#             */
+/*   Updated: 2023/12/13 18:51:45 by amennad          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
 
-void	philo_alone(t_data *data, t_philo *philo)
+int	take_fork(t_data *data, int i)
 {
-	philo->philo_status = DEAD;
-	philo->data->dead = TRUE;
-	try_lock(philo->l_fork);
-	// try_lock(data->str_message); // TODO PB SEGFAULT SI ACTIVÉ
-	printf("%s %d %d has taken a fork\n", C_EAT, 0, philo->id_philo);
-	printf("%s %ld %d died\n", C_DEAD, data->time_to_die, philo->id_philo);
-	try_unlock(philo->l_fork);
-	// try_unlock(data->str_message);
+	try_lock(data->philo->l_fork);
+	// if (pthread_mutex_lock(data->philo->l_fork) != 0)
+	// return (1);
+	if (print_status(data, data->philo[i].id_philo, "has taken a fork",
+			C_FORK) == 1)
+		return (1);
+	// if (pthread_mutex_lock(data->philo->r_fork) != 0)
+	// return (1);
+	try_lock(data->philo->r_fork);
+	if (print_status(data, data->philo[i].id_philo, "has taken a fork",
+			C_FORK) == 1)
+		return (1);
+	return (0);
 }
 
-t_bool
-philo_dead(t_philo *philo)
+int	drop_fork(t_data *data, int i)
 {
-	philo->philo_status = DEAD;
-	philo->data->dead = TRUE;
-	if (philo->nb_forks > 0)
+	(void)i;
+	if (pthread_mutex_unlock(data->philo->l_fork) != 0)
+		return (1);
+	if (pthread_mutex_unlock(data->philo->r_fork) != 0)
+		return (1);
+	return (0);
+}
+
+int	philo_life(t_data *data, size_t i)
+{
+	if (data->philo->philo_status == DEAD)
+		return (1);
+	if (data->philo->philo_status == EATING)
 	{
-		try_unlock(philo->l_fork);
-		if (philo->nb_forks > 1)
-			try_unlock(philo->r_fork);
-		printf("%s %ld %d died\n", C_DEAD, ft_time() - philo->data->start_meat,
-				philo->id_philo);
+		if (take_fork(data, i) == 1)
+			return (1);
+		if (print_status(data, data->philo[i].id_philo, "is eating",
+				C_EAT) == 1)
+			return (1);
+		data->philo[i].last_meal = ft_get_time();
+		usleep(data->time_to_eat * 1000);
+		if (drop_fork(data, i) == 1)
+			return (1);
+		data->philo[i].nb_eats++;
+		data->philo[i].philo_status = SLEEPING;
 	}
-	return (TRUE);
+	if (data->philo[i].philo_status == SLEEPING)
+	{
+		if (print_status(data, data->philo[i].id_philo, "is sleeping",
+				C_SLEEP) == 1)
+			return (1);
+		usleep(data->time_to_sleep * 1000);
+		data->philo[i].philo_status = THINKING;
+	}
+	if (data->philo[i].philo_status == THINKING)
+	{
+		if (print_status(data, data->philo[i].id_philo, "is thinking",
+				C_THINK) == 1)
+			return (1);
+		data->philo[i].philo_status = EATING;
+	}
+	return (0);
 }
 
 void	*routine(void *arg)
 {
-	t_philo *philo;
-	t_data *data;
+	t_data	*data;
+	size_t	i;
 
-	philo = (t_philo *)arg;
-	data = philo->data;
-
-	while (data->dead == FALSE)
+	data = (t_data *)arg;
+	try_lock(&data->mutex_n_thread);
+	i = data->n_thread;
+	try_unlock(&data->mutex_n_thread);
+	if (data->nb_meals > 0)
 	{
-		if (data->dead || philo->philo_status == DEAD)
-			break ;
-		if (philo->data->nb_philo == 1)
+		while (data->philo_dead == FALSE
+			&& data->nb_meals > data->philo[i].nb_eats)
 		{
-			philo_alone(data, philo);
-			break ;
+			if (philo_life(data, i) == 1)
+				break ;
 		}
-		// 		printf("%ld %d has taken a fork\n", start.tv_usec,
-		// philo->id_philo);
-		// 		philo->start_eat = start.tv_usec;
-		//
-		// 		// Prendre la fourchette à gauche
-		// 		pthread_mutex_lock(philo->l_fork);
-		// 		end.tv_usec = start.tv_usec + philo->data->time_to_eat;
-		// 		if (end.tv_usec - start.tv_usec > philo->data->time_to_die)
-		// 		{
-		// 			philo->philo_status = DEAD;
-		// 			philo->data->dead = TRUE;
-		// 			break ;
-		// 		}
-		// 		philo->philo_status = EATING;
-		// 		philo->nb_eats++;
-		// 		philo->last_meal = end.tv_usec;
-		// 		printf("%ld %d is eating\n", start.tv_usec, philo->id_philo);
-
-		// 		pthread_mutex_unlock(philo->l_fork);
-		// 		pthread_mutex_unlock(philo->r_fork);
-
-		// 		// Dormir
-		// 		philo->philo_status = SLEEPING;
-		// 		printf("%ld %d is sleeping\n", end.tv_usec, philo->id_philo);
-		// 		usleep(philo->data->time_to_sleep);
-		// 		// Pensée
-
-		// 		philo->philo_status = THINKING;
-		// 		printf("%ld %d is thinking\n", (end.tv_usec
-		// 					+ philo->data->time_to_sleep), philo->id_philo);
-		// 		if (philo->nb_eats == philo->data->nb_meals)
-		// 			break ;
-		// 	}
-		// 	if (philo->data->dead)
-		// 	{
-		// 		usleep(10);
-		// 		end.tv_usec = start.tv_usec + philo->data->time_to_die;
-		// 		printf("%ld %d died\n", end.tv_usec, philo->id_philo);
+	}
+	else
+	{
+		while (data->philo_dead == FALSE)
+		{
+			if (philo_life(data, i) == 1)
+				break ;
+		}
 	}
 	return (NULL);
 }

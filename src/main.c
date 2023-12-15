@@ -6,50 +6,51 @@
 /*   By: amennad <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/04 10:15:56 by amennad           #+#    #+#             */
-/*   Updated: 2023/12/12 09:51:10 by amennad          ###   ########.fr       */
+/*   Updated: 2023/12/14 17:39:18 by amennad          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
 
-void	cleanup(t_data *data)
+int	argc_invalid(int argc)
 {
-	size_t	i;
-
-	i = 0;
-	while (i < data->nb_philo)
+	if (argc < 5 || argc > 6)
 	{
-		pthread_join(data->philos_thread[i], NULL);
-		i++;
+		printf("Error: ");
+		printf("%s[nb_philosophers] ", C_BLUE);
+		printf("%s[time_to_die] ", C_DEAD);
+		printf("%s[time_to_eat] ", C_EAT);
+		printf("%s[time_to_sleep] ", C_SLEEP);
+		printf("%s[nb_meal]%s\n", C_EAT, C_RESET);
+		return (1);
 	}
-	while (data->nb_philo--)
-	{
-		pthread_mutex_destroy(data->forks);
-		pthread_detach(*data->philos_thread);
-	}
+	return (0);
 }
 
 int	main(int argc, char *argv[])
 {
-	t_data *data;
+	t_data	*data;
 
-	if (argc < 5 || argc > 6)
-	{
-		printf("Error: %s[nb_philosophers] %s[time_to_die] %s[time_to_eat] ",
-				C_BLUE,
-				C_DEAD,
-				C_EAT);
-		printf("%s[time_to_sleep] %s[nb_meat]\n", C_SLEEP, C_EAT);
+	if (argc_invalid(argc) == 1)
 		return (1);
-	}
 	data = (t_data *)malloc(sizeof(t_data));
-	if (check_valid_args(argv, data) == FALSE)
+	if (!data)
 		return (1);
-
-	t_philo *philos = (t_philo *)malloc(data->nb_philo * sizeof(t_philo));
-
-	initialize(data, philos);
-
-	cleanup(data);
-	return (0);
+	if (check_valid_args(argv, data) == FALSE)
+	{
+		return (philo_free(data, 1));
+	}
+	if (initialize(data) == 1)
+	{
+		return (philo_free(data, 1));
+	}
+	if (data->nb_philo == 1)
+	{
+		if (philo_alone(data) == 1)
+			return (philo_free(data, 1));
+		return (philo_free(data, 0));
+	}
+	if (the_meal(data) == 1)
+		return (philo_free(data, 1));
+	return (philo_free(data, 0));
 }
